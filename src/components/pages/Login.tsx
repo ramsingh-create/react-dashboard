@@ -7,6 +7,8 @@ import axios from "axios";
 import CryptoJS from 'crypto-js'
 import { makeAPIPOSTRequest } from "../../utills/apiActions";
 import { setIsLoading } from "../../store/loaderSlice";
+import { setToken } from "../../store/authSlice";
+import { setLoggedInUser } from "../../store/loggedInUserSlice";
 // import { setuserId, setauthtoken, setloginId, setlastLogin, routeChange } from "../store/loginSlice";
 
 // Declare the grecaptcha global type for TypeScript
@@ -152,20 +154,9 @@ export const Login: React.FC = () => {
             const options = {
                 successCallBack: (res: any) => {
                     if (res.token !== "") {
-                        // setUserId(res.user.id);
-
-                        // dispatch(setuserId({ userId: JSONData.user.id }));
-
-                        // dispatch(setauthtoken({ authtoken: JSONData.token }));
-
+                        dispatch(setToken(res.token));
                         localStorage.setItem("authtoken", res.token);
-
-                        // dispatch(setloginId({ loginid: JSONData.user.userName }));
-
-                        // dispatch(setlastLogin({ lastLogin: JSONData.user.id }));
-                        
-                        // axios.defaults.headers.common['Content-Type'] = 'application/json';
-                        // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("authtoken")}`;
+                        dispatch(setLoggedInUser(res.user));
                         getUserDetails();
                     }
                     dispatch(setIsLoading(false));
@@ -202,7 +193,6 @@ export const Login: React.FC = () => {
     };
 
     const loginAuthTokenMobile = () => {
-        // Implementation similar to loginAuthTokenUserName
         if (email.length > 0) {
             localStorage.clear();
             setEmailError(false);
@@ -210,12 +200,7 @@ export const Login: React.FC = () => {
             
             const encryptionKey = "RsW6hk68oIZ9LDA2kdr3Pm436EpRGipYabVM0ezyeBc=";
             const encryptedPassword = encrypt(password, encryptionKey);
-            // dispatch(setIsLoading(true));
-
-            const instance = axios.create({
-                baseURL: "https://livegateway.supermoney.in/identityservices/auth/v1/",
-                headers: { "content-type": "application/json" }
-            });
+            dispatch(setIsLoading(true));
 
             const data = {
                 mobile: email,
@@ -230,30 +215,24 @@ export const Login: React.FC = () => {
                 deviceName: ""
             };
             
-            instance.post("login", data)
-                .then((response) => {
-                    // Handle response similar to other login methods
-                    console.log(response);
-                    const JSONData = response.data;
-                    if (JSONData.token !== "") {
-                        // Same handling as in loginAuthTokenUserName
-                        setUserId(JSONData.user.id);
-                        // dispatch(setuserId({ userId: JSONData.user.id }));
-                        // dispatch(setauthtoken({ authtoken: JSONData.token }));
-                        localStorage.setItem("authtoken", JSONData.token);
-                        // dispatch(setloginId({ loginid: JSONData.user.userName }));
-                        // dispatch(setlastLogin({ lastLogin: JSONData.user.id }));
-                        
-                        axios.defaults.headers.common['Content-Type'] = 'application/json';
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("authtoken")}`;
+            const options = {
+                successCallBack: (res: any) => {
+                    
+                    if (res.token !== "") {
+                        dispatch(setToken(res.token));
+                        localStorage.setItem("authtoken", res.token);
+                        dispatch(setLoggedInUser(res.user));
                         getUserDetails();
                     }
-                    // dispatch(setIsLoading(false));
+                    dispatch(setIsLoading(false));
                     setProgress(false);
-                })
-                .catch((error) => {
+                },
+                failureCallBack: (error: any) => {
                     // Error handling similar to other login methods
                     if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
                         if (
                             error.response.data[0].errorMsg ===
                             "User with this mobile not found"
@@ -267,10 +246,12 @@ export const Login: React.FC = () => {
                                 window.grecaptcha.reset();
                             }
                         }
-                        // dispatch(setIsLoading(false));
+                        dispatch(setIsLoading(false));
                     }
                     setProgress(false);
-                });
+                }
+            };
+            makeAPIPOSTRequest("/identityservices/auth/v1/login", {}, data, options);
         } else {
             setEmailError(true);
             setErrorEmailTxt("Please enter login id");
@@ -323,7 +304,7 @@ export const Login: React.FC = () => {
             const encryptionKey = "RsW6hk68oIZ9LDA2kdr3Pm436EpRGipYabVM0ezyeBc=";
                 
             const encryptedPassword = encrypt(password, encryptionKey);
-            // dispatch(setIsLoading(true));
+            dispatch(setIsLoading(true));
 
             const instance = axios.create({
                 baseURL: "https://livegateway.supermoney.in/identityservices/auth/v1/",
@@ -343,31 +324,31 @@ export const Login: React.FC = () => {
                 deviceName: ""
             };
             
-            instance.post("login", data)
-                .then((response) => {
-                    console.log(response);
-                    const JSONData = response.data;
-                    if (JSONData.token !== "") {
-                        setUserId(JSONData.user.id);
+            const options = {
+                successCallBack: (res: any) => {
+                    console.log(res);
+                    // const JSONData = response.data;
+                    if (res.token !== "") {
+                        // setUserId(JSONData.user.id);
 
                         // dispatch(setuserId({ userId: JSONData.user.id }));
 
-                        // dispatch(setauthtoken({ authtoken: JSONData.token }));
-
-                        localStorage.setItem("authtoken", JSONData.token);
+                        dispatch(setToken(res.token));
+                        localStorage.setItem("authtoken", res.token);
+                        dispatch(setLoggedInUser(res.user));
 
                         // dispatch(setloginId({ loginid: JSONData.user.userName }));
 
                         // dispatch(setlastLogin({ lastLogin: JSONData.user.id }));
-                        
-                        axios.defaults.headers.common['Content-Type'] = 'application/json';
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("authtoken")}`;
+
+                        // axios.defaults.headers.common['Content-Type'] = 'application/json';
+                        // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("authtoken")}`;
                         getUserDetails();
                     }
-                    // dispatch(setIsLoading(false));
+                    dispatch(setIsLoading(false));
                     setProgress(false);
-                })
-                .catch((error) => {
+                },
+                failureCallBack: (error: any) => {
                     if (error.response) {
                         console.log(error.response.data);
                         console.log(error.response.status);
@@ -385,10 +366,12 @@ export const Login: React.FC = () => {
                                 window.grecaptcha.reset();
                             }
                         }
-                        // dispatch(setIsLoading(false));                    
+                        dispatch(setIsLoading(false));
                     }
                     setProgress(false);
-                });
+                }
+            };
+            makeAPIPOSTRequest("/identityservices/auth/v1/login", {}, data, options);
         } else {
             setEmailError(true);
             setErrorEmailTxt("Please enter login id");
