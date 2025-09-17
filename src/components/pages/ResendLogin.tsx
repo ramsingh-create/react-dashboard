@@ -107,15 +107,15 @@ export const ResendLogin: React.FC = () => {
     const options = {
       successCallBack: (res: any) => {
         if (res.userId != "") {
-               navigate(`/recoveryLinkSent?userID=${res.data.userId}`);
+               navigate(`/recoveryLinkSent?userID=${res.userId}`);
         }
         setIsLoading(false);
       },
       failureCallBack: (error: any) => {
-        if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
+        if (error) {
+              // console.log(error.response.data);
+              // console.log(error.response.status);
+              // console.log(error.response.headers);
               // if (
               //   error.response.data[0].errorMsg ===
               //   "User with this username not found"
@@ -127,7 +127,7 @@ export const ResendLogin: React.FC = () => {
               //   self.error = error.response.data[0].errorMsg;
               // }
               setEmailError(true);
-              setErrorEmailTxt(error.response.data[0].errorMsg);
+              setErrorEmailTxt(error[0].errorMsg);
 
         }
         setIsLoading(false);
@@ -135,71 +135,6 @@ export const ResendLogin: React.FC = () => {
     };
 
     makeAPIPOSTRequest("/identityservices/auth/v1/forgot-password", {}, { email: recoverEmail }, options)
-  };
-
-  // eslint-disable-next-line
-  const handleLogin = async () => {
-    if (!email || !emailValidation(email)) {
-      setErrorEmailTxt("Please enter valid email");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const timestamp = Math.round(+new Date() / 1000);
-
-      const requestData = {
-        data: {
-          loginID: email,
-          password: "" // You'll need to handle password input
-        },
-        msgHeader: {
-          authToken: "",
-          authLoginID: "",
-          timestamp: timestamp,
-          ipAddress: userIp
-        }
-      };
-
-      // Using mlForceLogin endpoint
-      const response: any = await makeAPIPOSTRequest(
-        "https://uatgateway.supermoney.in/mlForceLogin",
-        requestData
-      );
-
-      // Check if response exists and has data
-      if (response && response.data) {
-        const JSONData = response.data;
-
-        if (JSONData.data.error === 0) {
-          // Success callback - dispatch actions and navigate
-          dispatch({ type: "SET_LOGIN_ID", payload: JSONData.data.login });
-          dispatch({ type: "SET_AUTH_TOKEN", payload: JSONData.msgHeader.authToken });
-          dispatch({ type: "SET_LAST_LOGIN", payload: JSONData.data.lastLoginDate });
-          dispatch({ type: "SET_ACCOUNT_TYPE", payload: JSONData.data.accountTypes[0] });
-          dispatch({ type: "SET_CITY", payload: JSONData.data.city });
-          dispatch({ type: "SET_IP_ADDRESS", payload: userIp });
-
-          // Navigate based on account type
-          if (JSONData.data.accountTypes[0] === "EXTNBFC" || JSONData.data.accountTypes[0] === "EXTCOMPANY") {
-            navigate("/ugro");
-          } else {
-            navigate("/dashboard");
-          }
-        } else {
-          // Failure callback
-          setErrorEmailTxt(JSONData.data.message);
-        }
-      } else {
-        setErrorEmailTxt("Invalid response from server");
-      }
-    } catch (error: any) {
-      // Failure callback
-      setErrorEmailTxt(error.response?.data?.message || "Network Error");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const backToLogin = () => {
@@ -256,7 +191,7 @@ export const ResendLogin: React.FC = () => {
                             <i className="absolute right-3 top-2.5 text-gray-400 feather icon-user"></i>
                         </div>
                         {(emailError || errorEmailTxt) && (
-                            <span className="text-xs text-red-500 block text-center mt-1">
+                            <span className="text-xs text-red-500 block mt-1">
                                 {errorEmailTxt || "Email is required"}
                             </span>
                         )}

@@ -5,6 +5,8 @@ import Layout from "./components/layout/Layout";
 import {Login} from "./components/pages/Login";
 import { ResendLogin } from "./components/pages/ResendLogin";
 import Loader from "./components/pages/Loader";
+import { RecoveryLinkSent } from "./components/pages/RecoveryLinkSent";
+import {ResetPassword} from "./components/pages/ResetPassword";
 
 export default function App() {
   const mode = useSelector((state: any) => state.theme.mode);
@@ -19,6 +21,8 @@ export default function App() {
           <Route element={<Layout/>}>
             <Route path="/login" element={<Login/>} />
             <Route path="/resendLogin" element={<ResendLogin/>} />
+            <Route path="/recoveryLinkSent" element={<RecoveryLinkSent/>} />
+            <Route path="/resetPassword" element={<ResetPassword/>} />
 
           </Route>
           
