@@ -7,6 +7,8 @@ import { ResendLogin } from "./components/pages/ResendLogin";
 import Loader from "./components/pages/Loader";
 import { RecoveryLinkSent } from "./components/pages/RecoveryLinkSent";
 import {ResetPassword} from "./components/pages/ResetPassword";
+import { ContentNotFound } from "./components/pages/ContentNotFound";
+import { Error404 } from "./components/pages/Error404";
 
 export default function App() {
   const mode = useSelector((state: any) => state.theme.mode);
@@ -23,7 +25,8 @@ export default function App() {
             <Route path="/resendLogin" element={<ResendLogin/>} />
             <Route path="/recoveryLinkSent" element={<RecoveryLinkSent/>} />
             <Route path="/resetPassword" element={<ResetPassword/>} />
-
+            <Route path="/contentNotFound" element={<ContentNotFound/>} />
+          <Route path="/*" element={<Error404/>} />
           </Route>
           
         </Routes>
