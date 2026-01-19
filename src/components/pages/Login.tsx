@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import logo from '../../assets/images/logo.svg'
 import smartdashboard from "../../assets/images/smartdash-img.png";
 import axios from "axios";
 import CryptoJS from 'crypto-js'
-import { makeAPIPOSTRequest } from "../../utills/apiActions";
+import { makeAPIGETRequest, makeAPIPOSTRequest } from "../../utils/apiActions";
 import { setIsLoading } from "../../store/loaderSlice";
 import { setToken } from "../../store/authSlice";
-import { setLoggedInUser } from "../../store/loggedInUserSlice";
+import { setLoggedInUser, setUserAPIDetails } from "../../store/loggedInUserSlice";
 // import { setuserId, setauthtoken, setloginId, setlastLogin, routeChange } from "../store/loginSlice";
 
 // Declare the grecaptcha global type for TypeScript
@@ -35,6 +36,9 @@ export const Login: React.FC = () => {
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get("redirect");
     
     useEffect(() => {
         // Setup window function for callback
@@ -87,8 +91,7 @@ export const Login: React.FC = () => {
                 return;
             }
             
-            setProgress(true);
-            
+            setProgress(true);            
             if (emailValidation()) {
                 loginAuthTokenEmail();
             } else if (
@@ -379,8 +382,64 @@ export const Login: React.FC = () => {
     };
 
     const getUserDetails = () => {
-        navigate("/dashboard");
-    };
+        dispatch(setIsLoading(true));
+        const options = {
+             successCallBack: (res: any) => {
+                dispatch(setUserAPIDetails(res)); 
+                if (redirect && redirect.length > 0) {
+                    const redirectionUrl = `${redirect}?token=${localStorage.getItem("authtoken")}`;
+                    window.location.href = redirectionUrl;
+                }
+                else {
+
+                    if (res.roles[0].id === 11) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 12) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 10) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 9) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 8) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 13) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 14) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 25) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 6) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 4) {
+                        // navigate("/dashboard");
+                        const newURL = "https://www.supermoney.in/Escorts/";
+                        window.location.href = newURL;
+                    } else if (res.roles[0].id === 27) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 28) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 3) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 29) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 19) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 20) {
+                        navigate("/dashboard");
+                    } else if (res.roles[0].id === 30) {
+                        navigate("/dashboard");
+                    } else {
+                        navigate("/dashboard");
+                    }
+                }
+            },
+            failureCallBack: (err: any) => {
+                console.error("Error fetching user API details:", err);
+                setIsLoading(false)
+            },
+        }
+        makeAPIGETRequest('/identityservices/auth/v1/users', {}, options)
+    }
 
     const loadRecaptcha = () => {
         // Check if the script is already loaded
@@ -541,6 +600,30 @@ export const Login: React.FC = () => {
                         >
                             {progress ? "Logging in..." : "Login"}
                         </button>
+                    </div>
+                    <div className="mt-4">
+                        <GoogleLogin
+                            onSuccess={(credentialResponse) => {
+                                const token = credentialResponse.credential;
+                                fetch("/api/auth/google", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ token }),
+                                })
+                                    .then((res) => res.json())
+                                    .then((data) => {
+                                        // Store JWT, redirect, etc.
+                                    });
+                            }}
+                            onError={() => {
+                                console.error("Google Sign-In failed");
+                            }}
+                            shape="rectangular"
+                            theme="outline"
+                            text="signin_with"
+                            size="large"
+                            width="100%"
+                        />
                     </div>
                 </div>
             </div>

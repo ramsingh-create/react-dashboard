@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 // Optional: Attach Bearer token dynamically
 axiosInstance.interceptors.request.use((config) => {
-    const token = store.getState().auth.token
+    const token = store.getState().auth.token || localStorage.getItem("authtoken")
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }

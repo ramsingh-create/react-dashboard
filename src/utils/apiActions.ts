@@ -1,4 +1,5 @@
 // src/lib/apiRequest.ts
+import { useNavigate } from 'react-router-dom'
 import axiosInstance from './axiosInstance'
 
 interface APIOptions {
@@ -23,6 +24,12 @@ export const makeAPIRequest = async (
 
         options.successCallBack?.(response.data)
     } catch (error: any) {
+        const status = error.response?.status;
+
+        if (status === 401) {
+            window.location.href = "https://www.supermoney.in/SMSmartdashPwaRbac/#/login";
+            return;
+        }
         options.failureCallBack?.(error.response?.data || error.message)
     }
 }

@@ -3,11 +3,10 @@ import ContentNotfound from "../../assets/images/ContentNotfound.png";
 
 export const ContentNotFound = () => {
   return (
-    <>
-    <div>
-      <div className="w-full text-center ">
-        <img src={ContentNotfound} alt="login" className="mx-auto" />
-      </div>
+
+    <div className="w-full text-center ">
+      <img src={ContentNotfound} alt="login" className="mx-auto" />
+
       <div
         className="w-full text-center"
         style={{
@@ -20,6 +19,5 @@ export const ContentNotFound = () => {
         Requested Resource is not Available
       </div>
     </div>
-    </>
   )
 }

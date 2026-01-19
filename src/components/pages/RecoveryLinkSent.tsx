@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../assets/images/logo.svg'
 import IllustrationsLinkSent from '../../assets/images/Illustrations_LinkSent.png'
-import { makeAPIPOSTRequest } from '../../utills/apiActions';
+import { makeAPIPOSTRequest } from '../../utils/apiActions';
 import { setIsLoading } from "../../store/loaderSlice";
 import { useDispatch } from "react-redux";
 

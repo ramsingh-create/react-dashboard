@@ -3,6 +3,7 @@ import themeReducer from "./themeSlice";
 import authReducer from "./authSlice";
 import loggedInUserReducer from "./loggedInUserSlice";
 import loaderSlice from "./loaderSlice";
+import screenReducer from "./screenSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     auth: authReducer,
     loggedInUser: loggedInUserReducer,
     loader: loaderSlice,
+    screen: screenReducer,
   },
 });     
 

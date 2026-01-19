@@ -1,17 +1,21 @@
-import { useDispatch } from 'react-redux'
-import { toggleTheme } from '../../store/themeSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from '../../store/themeSlice';
+import { RootState } from '../../store/store';
 
 const ThemeToggle = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const theme = useSelector((state: RootState) => state.theme.mode); // assuming you store theme as boolean
 
     return (
-        <button
+        <div
             onClick={() => dispatch(toggleTheme())}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+            className={`w-12 h-6 flex items-center bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors duration-300`}
         >
-            Toggle Theme
-        </button>
-    )
-}
+            <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${theme === 'dark' ? 'translate-x-6' : 'translate-x-0'}`}
+            />
+        </div>
+    );
+};
 
-export default ThemeToggle
+export default ThemeToggle;

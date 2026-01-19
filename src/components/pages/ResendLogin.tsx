@@ -4,7 +4,7 @@ import logo from "../../assets/images/logo.svg";
 import illustrationSendEmail from "../../assets/images/Illustration_SendEmail.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { makeAPIPOSTRequest } from "../../utills/apiActions"; 
+import { makeAPIPOSTRequest } from "../../utils/apiActions"; 
 
 export const ResendLogin: React.FC = () => {
     const dispatch = useDispatch();

@@ -5,10 +5,10 @@ import logo from '../../assets/images/logo.svg'
 import IllustrationsReset from '../../assets/images/Illustrations_Reset.png'
 import checkGrey from "../../assets/images/CheckedGrey.png";
 import checkGreen from "../../assets/images/CheckGeenr.png";
-import { makeAPIPOSTRequest } from '../../utills/apiActions';
+import { makeAPIPOSTRequest } from '../../utils/apiActions';
 import { setIsLoading } from "../../store/loaderSlice";
 import { useDispatch } from "react-redux";
-// import { encrypt } from "../../utills/apiActions";
+// import { encrypt } from "../../utils/apiActions";
 
 
 export const ResetPassword = () => {
